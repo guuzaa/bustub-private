@@ -30,7 +30,12 @@ class HyperLogLogPresto {
   HyperLogLogPresto() = delete;
 
   /** @brief Parameterized constructor. */
-  explicit HyperLogLogPresto(int16_t n_leading_bits) : cardinality_(0) {}
+  explicit HyperLogLogPresto(int16_t n_leading_bits) : cardinality_(0), n_leading_bits_(n_leading_bits) {
+    if (n_leading_bits < 0) {
+      return;
+    }
+    dense_bucket_.resize(1ULL << n_leading_bits, 0);
+  }
 
   /** @brief Returns the dense_bucket_ data structure. */
   auto GetDenseBucket() const -> std::vector<std::bitset<BUCKET_SIZE>> { return dense_bucket_; }
@@ -56,6 +61,14 @@ class HyperLogLogPresto {
    */
   inline auto CalculateHash(T val) -> hash_t { return std::hash<T>{}(val); }
 
+  /**
+   * @brief Function that computes leading zeros.
+   *
+   * @param[in] bset - binary values of a given bitset
+   * @returns leading zeros of given binary set
+   */
+  auto PositionOfRightmostOne(hash_t hash) const -> uint64_t;
+
   /** @brief Structure holding dense buckets (or also known as registers). */
   std::vector<std::bitset<BUCKET_SIZE>> dense_bucket_;
 
@@ -66,6 +79,7 @@ class HyperLogLogPresto {
   uint64_t cardinality_;
 
   // TODO(student) - can add more data structures as required
+  int16_t n_leading_bits_;
 };
 
 }  // namespace bustub

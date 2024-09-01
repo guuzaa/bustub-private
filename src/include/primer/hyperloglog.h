@@ -23,7 +23,13 @@ class HyperLogLog {
  public:
   HyperLogLog() = delete;
 
-  explicit HyperLogLog(int16_t n_bits) : cardinality_(0) {}
+  explicit HyperLogLog(int16_t n_bits) : cardinality_(0) {
+    if (n_bits < 0) {
+      return;
+    }
+    max_positions_.resize(1ULL << static_cast<uint64_t>(n_bits), 0);
+    n_bits_ = n_bits;
+  }
 
   /**
    * @brief Getter value for cardinality.
@@ -74,6 +80,9 @@ class HyperLogLog {
   size_t cardinality_;
 
   /** @todo (student) can add their data structures that support HyperLogLog */
+  std::vector<uint64_t> max_positions_;
+  int16_t n_bits_;
+  std::mutex mtx_;  // for max_positions_
 };
 
 }  // namespace bustub
