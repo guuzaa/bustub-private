@@ -19,6 +19,9 @@
 /** @brief Total bucket size. */
 #define TOTAL_BUCKET_SIZE (DENSE_BUCKET_SIZE + OVERFLOW_BUCKET_SIZE)
 
+/** @brief Bit set capacity. */
+#define BITSET_CAPACITY 64
+
 namespace bustub {
 
 template <typename KeyType>
@@ -73,6 +76,25 @@ class HyperLogLogPresto {
     return 0;
   }
 
+  /** @brief Compute binary.
+   *
+   * @param[in] hash
+   *
+   * @returns the binary representation of the hash
+   */
+  auto ComputeBinary(const hash_t &hash) const -> std::bitset<BITSET_CAPACITY> {
+    return {hash};
+  }
+
+  /**
+   * @brief Counts the number of rightmost zeros in the binary representation of the hash.
+   *
+   * @param[in] hash
+   *
+   * @returns the number of rightmost zeros
+   */
+  auto CountRightMostZeros(const std::bitset<BITSET_CAPACITY> &binary) -> uint64_t;
+
   /** @brief Structure holding dense buckets (or also known as registers). */
   std::vector<std::bitset<DENSE_BUCKET_SIZE>> dense_bucket_;
 
@@ -83,6 +105,7 @@ class HyperLogLogPresto {
   uint64_t cardinality_;
 
   // TODO(student) - can add more data structures as required
+  int16_t n_bits_;
 };
 
 }  // namespace bustub
