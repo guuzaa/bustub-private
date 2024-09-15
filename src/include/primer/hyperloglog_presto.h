@@ -82,9 +82,7 @@ class HyperLogLogPresto {
    *
    * @returns the binary representation of the hash
    */
-  auto ComputeBinary(const hash_t &hash) const -> std::bitset<BITSET_CAPACITY> {
-    return {hash};
-  }
+  auto ComputeBinary(const hash_t &hash) const -> std::bitset<BITSET_CAPACITY> { return {hash}; }
 
   /**
    * @brief Counts the number of rightmost zeros in the binary representation of the hash.
